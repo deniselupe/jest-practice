@@ -95,5 +95,93 @@ describe('drinkEach', () => {
     Also under the alias .toBeCalledWith()
 
     Use .toHaveBeenCalledWith to ensure that a mock function was called with specific arguments.
-    The arguments are checked witht eh same algorithm that .toEqual uses.
+    The arguments are checked with the same algorithm that .toEqual uses.
+
+    For example, let's say that you can register a beverage with a 'register' function, and 
+    'applyToAll(f)' should apply the function 'f' to all registered beverages. 
+
+    To make sure this works, you could write:
 */
+
+const registeredDrinks = [];
+
+class LaCroix {
+    #_flavor;
+    #_registered;
+
+    constructor(flavor) {
+        this.#_flavor = flavor;
+        this.#_registered = false;
+    }
+
+    get flavor() {
+        return this.#_flavor;
+    }
+
+    get registered() {
+        return this.#_registered;
+    }
+
+    set registered(value) {
+        if (typeof(value) === 'boolean') {
+            this.#_registered = value;
+        } else {
+            throw new Error('Value is not a boolean!');
+        }
+    }
+}
+
+function register(drink) {
+    drink.registered = true;
+    registeredDrinks.push(drink);
+}
+
+function applyToAll(f) {
+    if (!!registeredDrinks.length) {
+        return registeredDrinks.map((drink) => {
+            return f(drink);
+        });
+    }
+
+    return [];
+}
+
+describe('applyToAll', () => {
+    test('registration applies correctly to orange La Croix', () => {
+        const beverage = new LaCroix('orange');
+        register(beverage);
+        const f = jest.fn();
+        applyToAll(f);
+        expect(f).toHaveBeenCalledWith(beverage);
+    });
+});
+
+/*
+    .toHaveBeenLastCalledWith(arg1, arg2, ...);
+    Also under the alias: .lastCalledWith(arg1, arg2, ...)
+
+    If you have a mock function, you can use .toHaveBeenLastCalledWith to test
+    what arguments it was last called with. 
+
+    For example, let's say you have a `applyToAllFlavors(f)` function 
+    that applies `f` to a bunch of flavors, and you want to 
+    ensure that when you call it, the last flavor it operates on is 'mango'.
+
+    You can write:
+*/
+
+function applyToAllFlavors(fn) {
+    const flavors = ['grape', 'strawberry', 'orange', 'mango'];
+
+    return flavors.map((flavor) => {
+        return fn(flavor);
+    });
+}
+
+describe('applyToAllFlavors', () => {
+    test('applying to all flavors does mango last', () => {
+        const drink = jest.fn();
+        applyToAllFlavors(drink);
+        expect(drink).toHaveBeenLastCalledWith('mango');
+    });
+});
