@@ -350,3 +350,184 @@ describe('drinksFive', () => {
         expect(drinksFive).toHaveNthReturnedWith(2, 'La Croix (Orange)');
     });
 });
+
+/*
+    .toHaveLength(number)
+
+    Use .toHaveLength to check that an object has a `.length` property 
+    and it is set to a certain numeric value.
+
+    This is especially useful for checking arrays or string size.
+*/
+
+describe('.toHaveLength(number)', () => {
+    test('test array size', () => {
+        expect([1, 2, 3]).toHaveLength(3);
+    });
+
+    test('test string size', () => {
+        expect('abc').toHaveLength(3);
+    });
+
+    test('test empty string size', () => {
+        expect('').not.toHaveLength(5);
+    });
+});
+
+/*
+    .toHaveProperty(keyPath, value?)
+
+    Use `.toHaveProperty` to check if property at provided reference `keyPath`
+    exists for an object.
+
+    For checking deeply nested properties in an object you may use dot notation
+    or an array containing the `keyPath` for deep references.
+
+    You can provide an optional `value` argument to compare the received property 
+    value (recursively for all properties of object instances also known as deep 
+    equaity, like the `.toEqual` matcher).
+
+    The following example contains a `houseForSale` object with nested properties. 
+
+    We are using `.toHaveProperty` to check for the existence and values of various 
+    properties in the object.
+*/
+
+describe('.toHaveProperty(keyPath, value?)', () => {
+    // Object containing house features to be tested
+    const houseForSale = {
+        bath: true,
+        bedrooms: 4,
+        kitchen: {
+            amenities: ['oven', 'stove', 'washer'],
+            area: 20,
+            wallColor: 'white',
+            'nice.oven': true
+        },
+        livingroom: {
+            amenities: [
+                {
+                    couch: [
+                        ['large', { dimensions: [20, 20] }],
+                        ['small', { dimensions: [10, 10] }]
+                    ]
+                }
+            ]
+        },
+        'ceiling.height': 2
+    };
+
+    test('this house has my desired features', () => {
+        // Example referencing
+        expect(houseForSale).toHaveProperty('bath');
+        expect(houseForSale).toHaveProperty('bedrooms', 4);
+        expect(houseForSale).not.toHaveProperty('pool');
+
+        // Deep referencing using dot notation
+        expect(houseForSale).toHaveProperty('kitchen.area', 20);
+        expect(houseForSale).toHaveProperty('kitchen.amenities', ['oven', 'stove', 'washer']);
+        expect(houseForSale).not.toHaveProperty('kitchen.open');
+
+
+        // Deep referencing using an array containing the keyPath
+        expect(houseForSale).toHaveProperty(['kitchen', 'area'], 20);
+        expect(houseForSale).toHaveProperty(['kitchen', 'amenities'], ['oven', 'stove', 'washer']);
+        expect(houseForSale).toHaveProperty(['kitchen', 'amenities', 0], 'oven');
+        expect(houseForSale).toHaveProperty('livingroom.amenities[0].couch[0][1].dimensions[0]', 20);
+        expect(houseForSale).toHaveProperty(['kitchen', 'nice.oven']);
+        expect(houseForSale).not.toHaveProperty(['kitchen', 'open']);
+
+        // Referencing keys with dot in the ket itself
+        expect(houseForSale).toHaveProperty(['ceiling.height'], 2);
+    });
+});
+
+/*
+    .toBeCloseTo(number, numDigits?)
+
+    Use `.toBeCloseTo` to compare floating point numbers for approximate 
+    equality.
+
+    The optional `numDigits` argument limits the number of digits to check after 
+    the decimal point. For the default value 2, the test criterion is 
+    `Math.abs(expected - received) < 0.005` (that is, `10 ** -2 / 2`).
+
+    Intuitive equality comparisons often fail, because arithmetic on decimal 
+    (base 10) values often have rounding errors in limited precision binary (base 2) 
+    representation. 
+
+    For example, this test fails:
+
+        test('adding works sanely with decimals', () => {
+            expect(0.2 + 0.1).toBe(0.3); // Fails!
+        });
+
+    It fails because in JavaScript, `0.2 + 0.1` is actually `0.30000000000000004`.
+
+    For example, this test below passes with a precision of 5 digits.
+
+    Because floating point errors are the problem that `.toBeCloseTo` solves,
+    it does not support big integer values.
+*/
+
+describe('.toBeCloseTo(number, numDigits?)', () => {
+    test('adding works sanely with decimals', () => {
+        expect(0.2 + 0.1).toBeCloseTo(0.3, 5);
+    });
+});
+
+/*
+    .toBeDefined()
+
+    Use `.toBeDefined` to check that a variable is not undefined. 
+
+    Note:
+    In the example below, you could write `expect(fetchNewFlavorIdea()).not.toBe(undefined)`,
+    but it's better practice to avoid referring to `undefined` directly in your code.
+
+    For example, if you want to check that a function `fetchNewFlavorIdea()` returns 
+    something, you can write:
+*/
+
+describe('.toBeDefined()',  () => {
+    const fetchNewFlavorIdea = () => "New flavor!";
+
+    test('there is a new flavor idea',  () => {
+        expect(fetchNewFlavorIdea()).toBeDefined();
+    });
+});
+
+/*
+    .toBeFalsy()
+
+    Use `.toBeFalsy` when you don't care what a value is and you want 
+    to ensure a value is false in a boolean context. 
+
+    For example, let's say you have some application code that looks like:
+
+        drinkSomeLaCroix();
+
+        if (!getErrors()) {
+            drinkMoreLaCroix();
+        }
+
+    You may not care what `getErrors` returns, specifically - it might return 
+    `false`, `null`, or 0, and your code would still work. 
+
+    Note:
+    In JavaScript, there are six falsy values: false, 0, '', null, undefined, and NaN.
+    Everything else is truthy.
+
+    So if you want to test there are no errors after drinking some La Croix, 
+    you could write:
+*/
+
+describe('.toBeFalsy()', () => {
+    const drinkSomeLaCroix = jest.fn();
+    const getErrors = () => false;
+
+    test('drinking La Croix does not lead to errors',  () => {
+        drinkSomeLaCroix();
+        expect(getErrors()).toBeFalsy();
+    });
+});
