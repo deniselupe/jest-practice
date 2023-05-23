@@ -531,3 +531,97 @@ describe('.toBeFalsy()', () => {
         expect(getErrors()).toBeFalsy();
     });
 });
+
+/*
+    .toBeGreaterThan(number | bigint)
+
+    Use `.toBeGreaterThan` to compare `received > expected` for number or big 
+    integer values.  
+
+    For example, test that `ouncesPerCan()` returns a value of more than 
+    10 ounces:
+*/
+
+describe('.toBeGreaterThan(number | bigint)', () => {
+    const ouncesPerCan = jest.fn(() => 11);
+
+    test('ounces per can is more than 10', () => {
+        expect(ouncesPerCan()).toBeGreaterThan(10);
+    });
+});
+
+/*
+    .toBeGreaterThanOrEqual(number | bigint)
+
+    Use `.toBeGreaterThanOrEqual` to compare `received >= expected` for 
+    number of big integer values. 
+
+    For example, test that `ouncesPerCan()` returns a value of at least 12 ounces:
+*/
+
+describe('.toBeGreaterThanOrEqual(number | bigint)', () => {
+    const ouncesPerCan = jest.fn(() => 12);
+
+    test('ounces per can is at least 12', () => {
+        expect(ouncesPerCan()).toBeGreaterThanOrEqual(12);
+    });
+});
+
+/*
+    .toBeLessThan(number | bigint)
+
+    Use `.toBeLessThan` to compare `received < expected` for number or
+    big integer values. 
+
+    For example, test that ouncesPerCan() returns a value of less than 20 ounces:
+*/
+
+describe('.toBeLessThan(number | bigint)', () => {
+    const ouncesPerCan = jest.fn(() => 19);
+
+    test('ounces per can is less than 20',  () => {
+        expect(ouncesPerCan()).toBeLessThan(20);
+    });
+});
+
+/*
+    .toBeLessThanOrEqual(number | bigint)
+
+    Use `.toBeLessThanOrEqual` to compare `received <= expected` for number 
+    or big integer values. 
+
+    For example, test that ouncesPerCan() returns a value of at most 12 ounces:
+*/
+
+describe('.toBeLessThanOrEqual(number | bigint)', () => {
+    const ouncesPerCan = jest.fn(() => 12);
+
+    test('ounces per can is at most 12',  () => {
+        expect(ouncesPerCan()).toBeLessThanOrEqual(12);
+    });
+});
+
+/*
+    .toBeInstanceOf(Class)
+
+    Use `.toBeInstanceOf(Class)` to check that an object is an instance 
+    of a class. 
+
+    This matcher uses `instanceof` underneath.
+*/
+
+describe('.toBeInstanceOf(Class)', () => {
+    class A {}
+
+    test('checking for instance of A class', () => {
+        expect(new A()).toBeInstanceOf(A);
+    });
+
+    test('check for instance of Function class', () => {
+        expect(() => {}).toBeInstanceOf(Function);
+    });
+
+    test('instanceof A is not instanceof Function', () => {
+        expect(new A()).not.toBeInstanceOf(Function);
+    });
+});
